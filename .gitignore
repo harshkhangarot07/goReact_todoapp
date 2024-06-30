@@ -1,1 +1,6 @@
-/air.toml
+.env
+
+node_modules
+
+
+
