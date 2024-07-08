@@ -64,7 +64,7 @@ func main() {
 		AllowMethods:     "GET, POST, DELETE, PATCH, OPTIONS",
 		AllowCredentials: true, // Only if you need to support credentials
 	}))
-
+	app.Get("/", handleRoot)
 	app.Get("/api/todos", getTodo)
 	app.Post("/api/todos", createTodo)
 	app.Patch("api/todos/:id", updateTodo)
@@ -82,6 +82,9 @@ func main() {
 
 	log.Fatal(app.Listen("0.0.0.0:" + port))
 
+}
+func handleRoot(c *fiber.Ctx) error {
+	return c.SendString("Hello from Fiber!")
 }
 
 func getTodo(c *fiber.Ctx) error {
