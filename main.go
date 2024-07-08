@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -57,17 +58,17 @@ func main() {
 
 	app := fiber.New()
 
-	// app.Use(cors.New(cors.Config{
-	// 	AllowOrigins:     "http://localhost:5173",
-	// 	AllowHeaders:     "Origin, Content-Type, Accept",
-	// 	AllowMethods:     "GET, POST, DELETE, PATCH, OPTIONS",
-	// 	AllowCredentials: true, // Only if you need to support credentials
-	// }))
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     "http://localhost:5173",
+		AllowHeaders:     "Origin, Content-Type, Accept",
+		AllowMethods:     "GET, POST, DELETE, PATCH, OPTIONS",
+		AllowCredentials: true, // Only if you need to support credentials
+	}))
 
-	app.Get("/api/todos", getTodos)
-	app.Post("/api/todos", createTodos)
-	app.Patch("api/todos/:id", updateTodos)
-	app.Delete("/api/todos/:id", deleteTodos)
+	app.Get("/api/todos", getTodo)
+	app.Post("/api/todos", createTodo)
+	app.Patch("api/todos/:id", updateTodo)
+	app.Delete("/api/todos/:id", deleteTodo)
 
 	port := os.Getenv("PORT")
 
@@ -83,7 +84,7 @@ func main() {
 
 }
 
-func getTodos(c *fiber.Ctx) error {
+func getTodo(c *fiber.Ctx) error {
 	var todos []Todo
 
 	cursor, err := collection.Find(context.Background(), bson.M{})
@@ -109,7 +110,7 @@ func getTodos(c *fiber.Ctx) error {
 	return c.JSON(todos)
 }
 
-func createTodos(c *fiber.Ctx) error {
+func createTodo(c *fiber.Ctx) error {
 
 	todo := new(Todo)
 
@@ -131,7 +132,7 @@ func createTodos(c *fiber.Ctx) error {
 
 }
 
-func updateTodos(c *fiber.Ctx) error {
+func updateTodo(c *fiber.Ctx) error {
 
 	id := c.Params("id")
 
@@ -154,7 +155,7 @@ func updateTodos(c *fiber.Ctx) error {
 
 }
 
-func deleteTodos(c *fiber.Ctx) error {
+func deleteTodo(c *fiber.Ctx) error {
 	id := c.Params("id")
 
 	objectID, err := primitive.ObjectIDFromHex(id)
